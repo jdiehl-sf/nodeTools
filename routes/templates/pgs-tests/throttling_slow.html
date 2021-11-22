@@ -1,0 +1,11 @@
+%%[
+	SET @STACK = '[stackKey]'
+]%%
+<h1>Q2 Throttling Slow: <span id=stack>%%=v(@STACK)=%%</span></h1>
+<h2>Source file: /q2-cloud-pages-react/resources/throttle_slow.html</h2>
+<hr>
+<script>
+window.setTimeout(() => {
+	console.log("TIMEOUT DONE");
+}, 5000);
+</script>

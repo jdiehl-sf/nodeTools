@@ -1,0 +1,120 @@
+%%[
+ SET @DE = 'Q2_PGS_CONTEXT_ENT_DE'
+ SET @STACK = '[stackKey]'
+ SET @contentBlockID = 8733
+ SET @contentBlockKey = '964bb5e6-3616-41b9-a8b6-f2552b02139d'
+ SET @imageID = 8731
+ SET @imageKey = '27f5fe3e-a4a6-4a7f-896b-1786ac3d7e87'
+ SET @imageIDFallBack = 8732
+ SET @imageKeyFallback = 'd9660d69-87e2-4cf2-8522-78e869fbabad'
+ SET @pageID = 496
+
+ <!-- CloudPagesURL -->
+ SET @cloudpageurl = CloudPagesURL(@pageID)
+
+ <!-- UpsertData, RowCount -->
+ SET @upsertCount = UpsertData(@DE, 1, 'Email', 'UpsertData@salesforce.com', 'Name', 'John Doe', 'Key', 'Q2 AMPSCRIPT TEST')
+ SET @rowsCSF = LOOKUPROWSCS(@DE,'Key','q2 ampscript test')
+ SET @rowsCST = LOOKUPROWSCS(@DE,'Key','Q2 AMPSCRIPT TEST')
+ SET @caseSensitiveFail = ROWCOUNT(@rowsCSF)
+ SET @caseSensitiveSuccess = ROWCOUNT(@rowsCST)
+
+ <!-- InsertData -->
+ SET @insertCount = InsertData(@DE, 'Email', 'InsertData@salesforce.com', 'Name', 'Jane Doe', 'Key', 'Q2 AMPSCRIPT TEST')
+
+ <!-- InsertDE -->
+ InsertDE(@DE, 'Email', 'InsertDE@salesforce.com', 'Name', 'Jack Doe', 'Key', 'Q2 AMPSCRIPT TEST')
+ 
+ <!-- Row, Field -->
+ SET @newRow = row(@RowsCST, 1)
+ SET @userName = field(@newRow, 'Name')
+
+ <!-- LookUp -->
+ SET @lookUp = Lookup(@DE, 'Name', 'Email', 'InsertDE@salesforce.com')
+
+ <!-- DeleteData -->
+ SET @deleteCount = DeleteData(@DE, 'Key', 'Q2 AMPSCRIPT TEST')
+
+ <!-- DataExtensionRowCount -->
+ SET @deRowCount = DataExtensionRowCount(@DE)
+
+ <!-- ContentBlockByID -->
+ SET @contentBlockByID = ContentBlockByID(@contentBlockID)
+
+ <!-- ContentBlockByKey -->
+ SET @contentBlockByKey = ContentBlockByKey(@contentBlockKey)
+
+ <!-- ContentImageByID -->
+ SET @contentImageByID = ContentImageByID(@imageID, @imageIDFallBack)
+
+ <!-- ContentImageByKey -->
+ SET @contentImageByKey = ContentImageByKey(@imageKey, @imageKeyFallBack)
+
+ <!-- HTTPPost -->
+ SET @response =''
+ SET @payload = '{
+  "Order Number":10110113,
+  "First Name":"Cloud",
+  "Last Name":"Pages",
+  "Amount":{
+   "Order Subtotal":120,
+   "VAT":20,
+   "Shipping":0,
+   "Order Total":120
+  }
+ }'
+
+ SET @request = HTTPPost("https://httpbin.org/post","application/json", @payload, @response)
+
+ <!-- HTTPGet -->
+ SET @getRequest = TreatAsContent(HTTPGet("https://httpbin.org/html"))
+]%%
+
+ <h1>Q2 AMPScript Test on Stack: <span id=stack>%%=v(@STACK)=%%</span></h1>
+ <h2>DE: <span id=dataextension>%%=v(@DE)=%%</span></h2>
+ <h2>Source file: /q2-cloud-pages-react/resources/ampscript.html</h2>
+ <hr>
+ <h3>DE Functions</h3>
+ <div>UpsertData Count: <span id="upsertData">%%=v(@upsertCount)=%%</span></div>
+ <div>InsertData Count: <span id="insertData">%%=v(@insertCount)=%%</span></div>
+ <div>LookUp Name: <span id="lookup">%%=v(@lookUp)=%%</span></div>
+ <div>DeleteData Count: <span id="deleteData">%%=v(@deleteCount)=%%</span></div>
+ <div>LookUpRowsCS, Rowcount: Case sensitive fail: <span id="lookUpRowsCS_fail">%%=v(@caseSensitiveFail)=%%</span></div>
+ <div>LookUpRowsCS, Rowcount: Case sensitive successs: <span id="lookUpRowsCS_success">%%=v(@caseSensitiveSuccess)=%%</span></div>
+ <div>DataExtensionRowCount: <span id="deRowCount">%%=v(@deRowCount)=%%</span></div>
+ <div>Field: <span id="field">%%=v(@userName)=%%</span></div>
+ <hr>
+ <div>
+  <h3>CloudPages URL</h3>
+  <div id="cloudpagesurl"><a href="%%=v(@cloudpagesurl)=%%">CloudPages URL Working</a></div>
+ </div>
+ <div>
+  <h3>ContentBlockByID:</h3>
+  <div id="contentBlockByID">%%=v(@contentBlockByID)=%%</div>
+ </div>
+ <hr>
+ <div>
+  <h3>ContentBlockByKey:</h3>
+  <div id="contentBlockByKey">%%=v(@contentBlockByKey)=%%</div>
+ </div>
+ <hr>
+ <div>
+  <h3>ContentImageByID:</h3>
+  <div id="contentImageByID">%%=v(@contentImageByID)=%%</div>
+ </div>
+ <hr>
+ <div>
+  <h3>ContentImageByKey:</h3>
+  <div id="contentImageByKey">%%=v(@contentImageByKey)=%%</div>
+ </div>
+ <hr>
+ <div>
+  <h3>HTTPPost:</h3>
+  Status Code: <span id="httpPost_status">%%=v(@request)=%%</span>
+  <br />Response: %%=v(@response)=%%
+ </div>
+ <hr>
+ <div>
+  <h3>HTTPGet:</h3>
+  <span id="httpGet">%%=v(@getRequest)=%%</span>
+ </div>

@@ -1,0 +1,24 @@
+<!doctype html>
+<html>
+<head>
+ <meta charset="utf-8">
+ <title></title>
+ <meta name="description" content="">
+ <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+  <script runat="server">
+ Platform.Load("Core", "1");
+    var request = new Script.Util.HttpRequest('http://play-euchre.herokuapp.com/get_only_test');
+    request.retries = 1;
+    request.continueOnError = false;
+ request.method = "GET";
+    var response = request.send();
+    var statusCode = response.statusCode;
+   if (statusCode != 200) {
+      Platform.Function.RaiseError("Server Error", 0, 500, 500);
+    }
+</script>
+
+</body>
+</html>

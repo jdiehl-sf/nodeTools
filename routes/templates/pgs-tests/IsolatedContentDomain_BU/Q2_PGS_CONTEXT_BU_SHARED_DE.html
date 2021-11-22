@@ -1,0 +1,33 @@
+%%[
+  SET @DE = 'ENT.Q2_PGS_CONTEXT_SHARED_DE'
+  SET @STACK = '[stackKey]'
+  UpsertDE(@DE, 1, 'Email', 'q2test1@salesforce.com', 'Name', 'q2test1', 'Key', 'ampscript context test')
+  UpsertDE(@DE, 1, 'Email', 'q2test2@exacttarget.com', 'Name', 'q2test2', 'Key', 'ampscript context test')
+  
+  SET @Rows = LookupRows(@DE, 'Key', 'ampscript context test')
+  SET @Count = ROWCOUNT(@Rows)
+  ]%%
+     
+  <h1>
+    Q2 Test on Stack:<span id=stack>%%=v(@STACK)=%%</span> testing AmpScript context access to DE:<span id=dataextension>%%=v(@DE)=%%</span>
+  </h1>
+  <h4>
+    Row Count: <span id=rowcount>%%=v(@Count)=%%</span>
+  </h4>
+  <hr>
+  <div class=de-rows>
+%%[
+FOR @i=1 TO @Count DO
+
+SET @Row = Row(@Rows, @i)
+SET @Name = Field(@Row, 'Name')
+SET @Email = Field(@Row, 'Email')
+]%%
+ 
+    <p data-rowid=%%=v(@i)=%%>
+      <span class=name>%%=v(@Name)=%%</span> <span class=email>%%=v(@Email)=%%</span>
+    </p>
+    
+%%[
+NEXT @i
+]%%

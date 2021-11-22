@@ -1,0 +1,118 @@
+%%[
+SET @DE = 'Q2_PGS_CONTEXT_ENT_DE'
+SET @STACK = '[stackKey]'
+]%%
+<h1>Q2 SSJS Test on Stack: <span id=stack>%%=v(@STACK)=%%</span></h1>
+<h2>DE: <span id=dataextension>%%=v(@DE)=%%</span></h2>
+<h2>Source file: /q2-cloud-pages-react/resources/ssjs.html</h2>
+<hr>
+<h3>DE Functions</h3>
+<script runat=server language="JavaScript">
+	Platform.Load("core", "1");
+	var pgsDE = DataExtension.Init("Q2_PGS_CONTEXT_ENT_DE");
+	var contentBlockID = 8733
+	var contentBlockKey = '964bb5e6-3616-41b9-a8b6-f2552b02139d'
+	var imageID = 8731
+	var imageKey = '27f5fe3e-a4a6-4a7f-896b-1786ac3d7e87'
+	var imageIDFallBack = 8732
+	var imageKeyFallback = 'd9660d69-87e2-4cf2-8522-78e869fbabad'
+
+	// Add Data
+	pgsDE.Rows.Add({ Key: 'SSJS TEST', Name: 'Joe SSJS', Email: 'ssjs@salesforce.com' });
+	Write("<div id='added'>ADD SUCCESS</div>");
+
+	// LookUp
+	Write("<h2>LookUp</h2>");
+	Write("<table class='data-table lookup'>");
+	var rowsLookup = pgsDE.Rows.Lookup(['Name'], ['Joe SSJS']);
+	Write("<tr><td id='lookup'>" + rowsLookup.length + "</td></tr>")
+	for (var i = 0; i < rowsLookup.length; i++) {
+		Write("<tr>");
+		Write("<td>" + rowsLookup[i].Key + "</td>");
+		Write("<td>" + rowsLookup[i].Name + "</td>");
+		Write("<td>" + rowsLookup[i].Email + "</td>");
+		Write("</tr>");
+	}
+	Write("</table>");
+	Write("<hr />");
+
+	var rowsRetrieve = pgsDE.Rows.Retrieve();
+	Write("<h2>Retrieve</h2>");
+	Write("<table class='data-table retrieve'>");
+	Write("<tr><td id='retrieve'>" + rowsRetrieve.length + "</td></tr>")
+	for (var i = 0; i < rowsRetrieve.length; i++) {
+		Write("<tr>");
+		Write("<td>" + rowsRetrieve[i].Key + "</td>");
+		Write("<td>" + rowsRetrieve[i].Name + "</td>");
+		Write("<td>" + rowsRetrieve[i].Email + "</td>");
+		Write("</tr>");
+	}
+	Write("</table>");
+	Write("<hr />");
+
+	// Update
+	pgsDE.Rows.Update({ 'Name': 'Joe SSJS UPDATED' }, ['Name'], ['Joe SSJS']);
+	Write("<h2>Update</h2>");
+	Write("<table class='data-table lookup'>");
+	// LookUp
+	var rowsLookup = pgsDE.Rows.Lookup(['Name'], ['Joe SSJS UPDATED']);
+	for (var i = 0; i < rowsLookup.length; i++) {
+		Write("<tr>");
+		Write("<td>" + rowsLookup[i].Key + "</td>");
+		Write("<td id='update'>" + rowsLookup[i].Name + "</td>");
+		Write("<td>" + rowsLookup[i].Email + "</td>");
+		Write("</tr>");
+	}
+	Write("</table>");
+	Write("<hr />");
+
+	// Remove
+	pgsDE.Rows.Remove(['Name'], ['Joe SSJS UPDATED']);
+	var rowsRemove = pgsDE.Rows.Retrieve();
+	Write("<h2>Remove</h2>");
+	Write("<table class='data-table retrieve'>");
+	Write("<tr><td id='remove'>" + rowsRemove.length + "</td></tr>")
+	for (var i = 0; i < rowsRemove.length; i++) {
+		Write("<tr>");
+		Write("<td>" + rowsRemove[i].Key + "</td>");
+		Write("<td>" + rowsRemove[i].Name + "</td>");
+		Write("<td>" + rowsRemove[i].Email + "</td>");
+		Write("</tr>");
+	}
+	Write("</table>");
+	Write("<hr />");
+
+	Write("<h2>ContentBlockByID</h2>");
+	Write("<div id='contentBlockByID'>");
+	Platform.Response.Write(Platform.Function.ContentBlockByID(contentBlockID));
+	Write("</div>");
+	Write("<hr />");
+
+	Write("<h2>ContentBlockByKey</h2>");
+	Write("<div id='contentBlockByKey'>");
+	Platform.Response.Write(Platform.Function.ContentBlockByKey(contentBlockKey));
+	Write("</div>");
+	Write("<hr />");
+
+	Write("<h2>ContentImageByID</h2>");
+	Write("<div id='contentImageByID'>");
+	Platform.Response.Write(Platform.Function.ContentImageByID(imageID, imageIDFallBack));
+	Write("</div>");
+	Write("<hr />");
+
+	Write("<h2>ContentImageByKey</h2>");
+	Write("<div id='contentImageByKey'>");
+	Platform.Response.Write(Platform.Function.ContentImageByKey(imageKey, imageKeyFallBack));
+	Write("</div>");
+	Write("<hr />");
+
+	// HTTPost
+	var statusCode = Platform.Function.HTTPPost('https://httpbin.org/post', 'application/javascript', '{data: "someValue"}', [], [], [0]);
+	Platform.Response.Write("Status Code: <span id='httpPost_status'>" + statusCode + "</span></div>");
+
+	Write("<hr />");
+
+	// HTTPGet
+	var content = Platform.Function.HTTPGet('https://httpbin.org/html', false, 0, [], [], [0]);
+	Platform.Response.Write("<span id='httpGet'>" + content + "</div>");
+</script>
