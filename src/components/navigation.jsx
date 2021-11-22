@@ -15,9 +15,9 @@ class Navigation extends React.Component {
 				<li className="nav-item">
 					<NavLink activeclassname="active" to="/" className="nav-link">Page Response Test</NavLink>
 				</li>
-				<li className="nav-item">
+				{/* <li className="nav-item">
 					<NavLink activeclassname="active" to="/publish-landing-page" className="nav-link">Publish Landing Page</NavLink>
-				</li>
+				</li> */}
 			</ul>
 		);
 	}

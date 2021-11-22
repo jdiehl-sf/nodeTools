@@ -7319,9 +7319,6 @@ function App() {
     exact: true,
     path: "/",
     element: /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(_components_playwright__WEBPACK_IMPORTED_MODULE_4__["default"], null)
-  }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_6__.Route, {
-    path: "publish-landing-page",
-    element: /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(_components_publishLandingPage__WEBPACK_IMPORTED_MODULE_3__["default"], null)
   })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("footer", {
     className: "d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("p", {
@@ -7394,13 +7391,7 @@ var Navigation = /*#__PURE__*/function (_React$Component) {
         activeclassname: "active",
         to: "/",
         className: "nav-link"
-      }, "Page Response Test")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("li", {
-        className: "nav-item"
-      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_1__.NavLink, {
-        activeclassname: "active",
-        to: "/publish-landing-page",
-        className: "nav-link"
-      }, "Publish Landing Page")));
+      }, "Page Response Test")));
     });
 
     _this.state = {};

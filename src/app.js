@@ -23,7 +23,7 @@ function App() {
 					</header>
 					<Routes>
 					<Route exact path="/" element={<Playwright />} />
-					<Route path="publish-landing-page" element={<PublishLandingPage />} />
+					{/* <Route path="publish-landing-page" element={<PublishLandingPage />} /> */}
 					</Routes>
 					<footer className="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top">
 						<p className="col-md-4 mb-0 text-muted">© 2021 Salesforce</p>
