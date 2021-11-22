@@ -9,4 +9,5 @@ Playwright tool
 Go to localhost:4000
 
 Example page to test: https://pub.s8.sfmctest.com/registration
-Filter: pub.s8.sfmctest.com
+
+Filter: /tx-user
