@@ -1,21 +1,32 @@
 # nodeTools
 
-Playwright tool
+## Starting the app
 
-* npm i
-* npm start
-* (new tab) npm run dev (only needed if developing)
+* `npm i`
+* `npm start`
+* (new tab) `npm run dev` (only needed if developing)
 
-Go to localhost:3000
+Go to http://localhost:3000
 
-Example page to test: https://pub.s8.sfmctest.com/registration
+### Playwright tool
 
-Filter: /tx-user
+* Example page to test: https://pub.s8.sfmctest.com/registration
+* Example filter: /tx-user
 
-Create Landing Page
-Create a Server to Server App with client id/secrets in Setup | Installed Packages
-Create a Config in Test Manager with fields:
+### Create Landing Page
+
+* Create a Server to Server App with client id/secrets in *Setup | Installed Packages*
+* Create a Config in Test Manager with fields:
 	* ClientID
 	* ClientSecret
 	* tseId
 	* collectionId (optional)
+
+### Delete Landing Page
+
+* Log in as the user or impersonate
+* Grab the authorization bearer code
+	* Aggregator is a good route to find this.
+* Use the landingPageId
+	* `v2/cloudpages/landing-pages/{landingPageId`
+	* channelItemId from the `v2/cloudpages/collections/{landingPageId}/items` route
