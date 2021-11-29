@@ -10,9 +10,6 @@ module.exports = {
 	},
 	devtool: 'source-map',
 	watch: true,
-	devServer:{
-        contentBase: 'public'
-    },
 	resolve: {
 		extensions: ['*', '.js', '.jsx']
 	},
@@ -56,8 +53,5 @@ module.exports = {
 				use: 'url-loader?limit=30&name=assets/fonts/webfonts/[name].[ext]'
 			}
 		]
-	},
-	devServer: {
-		historyApiFallback: true,
 	}
 };
