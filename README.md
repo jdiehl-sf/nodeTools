@@ -1,12 +1,11 @@
 # nodeTools
 
-Playwright tool
-
 * npm i
-* npm start
-* (new tab) npm run dev (only needed if developing)
+* npm run start-dev
 
 Go to localhost:3000
+
+Playwright tool
 
 Example page to test: https://pub.s8.sfmctest.com/registration
 

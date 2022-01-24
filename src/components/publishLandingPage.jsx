@@ -6,14 +6,20 @@ import Spinner from './spinner';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 
-
 class PublishLandingPage extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
 			showLoader: false,
-			items: [],
 			hasError: '',
+			successAuth: false,
+			successCollection: false,
+			successCreate: false,
+			successState: false,
+			successPublish: false,
+			landingPageId: '',
+			urlObject: [],
+			stackKey: '',
 			//Payload
 			contextId: '',
 			configName: '',
@@ -37,25 +43,39 @@ class PublishLandingPage extends React.Component {
 		this.setState({ [name]: value });
 	}
 
-	submit = () => {
-		this.setState({
-			items: [],
-			showLoader: true,
-			hasError: '',
-			contextId_error: false,
-			configName_error: false
-		});
-
-		axios.post('/routes/landing-page/publish', {
+	getAuth = async () => {
+		// GET AUTH DATA
+		await axios.get('/routes/auth', {
 			configContext: this.state.contextId,
 			configName: this.state.configName,
-			pageContent: this.state.pageContent,
-			landingPageName: this.state.landingPageName,
-			collectionName: this.state.collectionName
 		}).then(res => {
 			this.setState({
+				successAuth: true,
+				stackKey: res.data.stackKey
+			});
+			document.cookie = `bearerToken=${res.data.bearerToken}; SameSite=None; Secure`;
+			document.cookie = `hostname=${res.data.hostname}; SameSite=None; Secure`;
+			document.cookie = `collectionId=${res.data.collectionId}; SameSite=None; Secure`;
+		}).catch(err => {
+			this.setState({
 				showLoader: false,
-				items: res.data,
+				hasError: `${err.response.status}: ${err.response.data.error}`
+			});
+		});
+	}
+
+	createCollection = async () => {
+		const options = {
+			collectionName: this.state.collectionName,
+		}
+		await axios({
+			url: 'routes/collection/',
+			method: 'post',
+			data: options
+		}).then(res => {
+			this.setState({
+				collectionId: res.data.collectionId,
+				successCollection: true
 			});
 		}).catch(err => {
 			this.setState({
@@ -65,10 +85,158 @@ class PublishLandingPage extends React.Component {
 		});
 	}
 
+	createLandingPage = async () => {
+		const data = {
+			pageContent: this.state.pageContent,
+			landingPageName: this.state.landingPageName,
+			collectionId: this.state.collectionId,
+			stackKey: this.state.stackKey
+		}
+		await axios({
+			url: 'routes/landing-page/',
+			method: 'post',
+			data
+		}).then(res => {
+			this.setState({
+				landingPageId: res.data.landingPageId,
+				landingPageName: res.data.name,
+				successCreate: true
+			});
+		}).catch(err => {
+			this.setState({
+				showLoader: false,
+				hasError: `${err.response.status}: ${err.response.data.error}`
+			});
+		});
+	}
+
+	getStateId = async () => {
+		await axios({
+			url: `/routes/state/${this.state.landingPageId}`,
+			method: 'get'
+		}).then(res => {
+			this.setState({
+				stateId: res.data.stateId,
+				successState: true
+			});
+		}).catch(err => {
+			this.setState({
+				showLoader: false,
+				hasError: `${err.response.status}: ${err.response.data.error}`
+			});
+		});
+	}
+
+	publishPage = async () => {
+		await axios({
+			url: `/routes/landing-page/${this.state.landingPageId}/publish`,
+			method: 'post',
+			data: {
+				stateId: this.state.stateId
+			},
+		}).then(res => {
+			this.state.urlObject.unshift({
+				name: this.state.landingPageName,
+				stack: this.state.stackKey,
+				publishedUrl: res.data.url
+			})
+
+			this.setState({
+				url: res.data.url,
+				urlObject: this.state.urlObject,
+				successState: false,
+				successCreate: false,
+				successCollection: false,
+				collectionName: '',
+				landingPageName: '',
+				showLoader: false
+			});
+		}).catch(err => {
+			this.setState({
+				showLoader: false,
+				hasError: `${err.response.status}: ${err.response.data.error}`
+			});
+		});
+	}
+
+	submit = async () => {
+		this.setState({
+			showLoader: true,
+			hasError: '',
+			contextId_error: false,
+			configName_error: false
+		});
+
+		if (!this.getCookie('bearerToken')) {
+			await this.getAuth();
+		}
+
+		if (this.state.collectionName) {
+			await this.createCollection();
+		}
+
+		if (!this.state.hasError) {
+			// CREATE LANDING PAGE
+			await this.createLandingPage();
+		}
+
+		if (!this.state.hasError) {
+			// GET STATE ID
+			await this.getStateId();
+		}
+
+		if (!this.state.hasError) {
+			// PUBLISH PAGE
+			await this.publishPage();
+		}
+	}
+
+	getCookie = (cname) => {
+		let name = cname + "=";
+		let decodedCookie = decodeURIComponent(document.cookie);
+		let ca = decodedCookie.split(';');
+		for(let i = 0; i <ca.length; i++) {
+			let c = ca[i];
+			while (c.charAt(0) == ' ') {
+				c = c.substring(1);
+			}
+			if (c.indexOf(name) == 0) {
+				return c.substring(name.length, c.length);
+			}
+		}
+
+		return '';
+	}
+
 	render() {
-		const { showLoader, hasError, items } = this.state;
-		const success = items.length > 0 && (
-			items.map((item, index) => (
+		const { showLoader, hasError, successAuth, successCollection, successCreate, successState } = this.state;
+
+		const auth = successAuth && (
+			<div className="alert alert-success" role="alert">
+				<div className="">Authorized</div>
+			</div>
+		);
+		
+		const collection = successCollection && (
+			<div className="alert alert-success" role="alert">
+				<div className="">Collection created</div>
+			</div>
+		);
+
+		const create = successCreate && (
+			<div className="alert alert-success" role="alert">
+				<div className="">Landing page created</div>
+			</div>
+		);
+
+		const state = successState && (
+			<div className="alert alert-success" role="alert">
+				<div className="">Page State recieved</div>
+			</div>
+		);
+		
+		const urlObject = this.state.urlObject.length > 0 && (
+			this.state.urlObject.map((item, index) => (
 				<div key={uuidv4()} className="alert alert-success" role="alert">
 					<div className="">{item.stack}</div>
 					<div>{(index === 0) && <span className="badge bg-secondary">New</span>} <b>{item.name}</b> published successfully.</div>
@@ -148,9 +316,13 @@ class PublishLandingPage extends React.Component {
 							</div>
 						</div>
 						<div className="col">
+							{ auth }
+							{ urlObject }
+							{ collection }
+							{ create }
+							{ state }
 							{ showLoader && <Spinner /> }
 							{ error }
-							{ success }
 						</div>
 					</div>
 				</div>

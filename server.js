@@ -4,14 +4,18 @@ const chalk = require('chalk');
 const debug = require('debug')('app');
 const morgan = require('morgan');
 const path = require('path');
+const cookieParser = require('cookie-parser')
 const { webkit } = require('playwright');
-publishLandingPage = require('./routes/publishLandingPage.js');
+const state = require('./routes/state.js');
+const landingPage = require('./routes/landing-page.js');
+const collection = require('./routes/collection.js');
+const auth = require('./routes/auth.js');
 
 const log = console.log;
 const PORT = process.env.PORT || 3000;
 const app = express();
 app.use(express.json());
-
+app.use(cookieParser());
 app.use(morgan('tiny'));
 app.use(express.static(path.join(__dirname, '/public/')));
 
@@ -19,9 +23,29 @@ app.listen(PORT, () => {
 	debug(`listening on port ${chalk.green(PORT)}`);
 });
 
-app.post('/routes/landing-page/publish', (req, res) => {
-	log(chalk.blue('/routes/publish-landing-page starting...'));
-	publishLandingPage.getConfigContexts(req.body, res);
+app.get('/routes/auth', (req, res) => {
+	log(chalk.blue('/routes/auth starting...'));
+	auth.getAuthData(req, res);
+});
+
+app.post('/routes/landing-page/', (req, res) => {
+	log(chalk.blue('/routes/landing-page POST starting...'));
+	landingPage.post(req, res);
+});
+
+app.post('/routes/landing-page/:id/publish', (req, res) => {
+	log(chalk.blue('/routes/landing-page PUBLISH starting...'));
+	landingPage.publish(req, res);
+});
+
+app.post('/routes/collection/', (req, res) => {
+	log(chalk.blue('/routes/collection POST starting...'));
+	collection.post(req, res);
+});
+
+app.get('/routes/state/:id', (req, res) => {
+	log(chalk.blue('/routes/state GET starting...'));
+	state.get(req, res);
 });
 
 app.post('/routes/landing-page/delete', (req, res) => {
