@@ -4,7 +4,7 @@
   "description": "",
   "private": true,
   "scripts": {
-    "server": "nodemon server.js",
+    "server": "DEBUG=app nodemon server.js",
     "debug": "DEBUG=* nodemon server.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "npx webpack",
