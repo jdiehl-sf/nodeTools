@@ -4,13 +4,18 @@
   "description": "",
   "private": true,
   "scripts": {
-    "start": "DEBUG=app nodemon server.js",
+    "server": "DEBUG=app nodemon server.js",
     "debug": "DEBUG=* nodemon server.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "npx webpack"
+    "dev": "npx webpack",
+    "start-dev": "concurrently \"npm run server\" \"npm run dev\""
   },
   "author": "Jason Diehl",
   "license": "ISC",
+  "engines": {
+    "node": "^12",
+    "npm": ">6"
+  },
   "dependencies": {
     "axios": "^0.24.0",
     "express": "4.17.1",
@@ -21,12 +26,15 @@
   },
   "devDependencies": {
     "@babel/core": "^7.16.0",
+    "@babel/plugin-transform-runtime": "^7.16.8",
     "@babel/preset-env": "^7.16.4",
     "@babel/preset-react": "^7.16.0",
     "babel-loader": "^8.2.3",
     "bootstrap": "^5.1.3",
     "chalk": "4.1.1",
     "classnames": "^2.3.1",
+    "concurrently": "^7.0.0",
+    "cookie-parser": "^1.4.6",
     "css-loader": "^6.5.1",
     "debug": "4.3.1",
     "dotenv": "^10.0.0",

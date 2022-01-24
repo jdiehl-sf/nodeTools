@@ -2,9 +2,8 @@
 
 ## Starting the app
 
-* `npm i`
-* `npm start`
-* (new tab) `npm run dev` (only needed if developing)
+* npm i
+* npm run start-dev
 
 Go to http://localhost:3000
 
@@ -28,5 +27,5 @@ Go to http://localhost:3000
 * Grab the authorization bearer code
 	* Aggregator is a good route to find this.
 * Use the landingPageId
-	* `v2/cloudpages/landing-pages/{landingPageId`
+	* `v2/cloudpages/landing-pages/{landingPageId}`
 	* channelItemId from the `v2/cloudpages/collections/{landingPageId}/items` route
